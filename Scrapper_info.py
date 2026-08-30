@@ -21,11 +21,12 @@ def info_scrapper():
     doctors_json = {}
 
     for link in links:
-
-        #Nombre
         html = urlopen(link)
         bs = BeautifulSoup(html, 'html.parser')
-        print(bs.find(attrs={"data-test-id" : "doctor-header-fullname"}).get_text(strip = True))
+        #Nombre
+        nombre = (bs.find(attrs={"data-test-id" : "doctor-header-fullname"}).get_text(strip = True))
+
+        #clinica
 
     return()
 info_scrapper()
