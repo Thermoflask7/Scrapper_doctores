@@ -4,6 +4,7 @@ import re
 from Scrapper_doctores import profile_scrapper
 
 
+
 """
     Doctors_json = {
         "doctor1": {
@@ -109,7 +110,17 @@ def info_scrapper():
                 }
         #print(experiencia_json)
         #print (redes_sociales)
-        print(especialidad)
+        #print(especialidad) Hola mundo
 
-    return()
+        #No. de cedula
+        cedula= bs.find(string = [re.compile('cédula:')])
+        cedula=cedula.split(':')[-1].split() if cedula else "None"
+        #re.sub(r"\s+", "", cedula) if cedula else None
+
+ 
+        #aseguradoras
+        #aseguradoras_tag= bs.find_all('li', attrs={"class" : "insurance-item"})
+        #aseguradoras = [tag.get_text(strip = True) for tag in aseguradoras_tag] 
+        #print(aseguradoras)
+    return() 
 info_scrapper()
