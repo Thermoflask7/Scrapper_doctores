@@ -84,10 +84,42 @@ def info_scrapper():
             enfoques = [enfoque.get_text(strip = True) for enfoque in enfoques_tag if enfoque.get_text(strip=True)] if enfoques_tag else "None" 
 
             # se puede hacer de una mejor forma seleccionando los iconos que aparentemente siempre vienen con cada tipo y moverse al texto de forma manual que es un span siguiente
-            pacientes = experiencia.find_all(string=[re.compile('Adultos'), re.compile('Niños') ])
+            #pacientes = experiencia.find_all(string=[re.compile('Adultos'), re.compile('Niños') ])
+            h3 = experiencia.find('h3', string=lambda s: s and 'Pacientes que atiendo' in s)
+            pacientes = []
+            if h3 is not None:
+                div_hijo = h3.find_parent('div', class_='mb-1')
+                if div_hijo is not None:
+                    pacientes_tag = div_hijo.find_parent('div')
+                    if pacientes_tag is not None:
+                        for fila in pacientes_tag.find_all('div', recursive=False):
+                            if fila is div_hijo:
+                                continue
+                            pacientes_span = fila.find('span')
+                            if pacientes_span is None:
+                                continue
+                            pacientes.append(pacientes_span.find(string=True,recursive=False).strip())
+            #print(pacientes)
 
-            # #NO FUNCIONA ACTUALMENTE, la mejor forma probablemente es seleccionar los iconos que aparentemente siempre vienen con cada tipo y moverse al texto de forma manual
-            #tipos_consulta = experiencia.find(attrs={}) 
+            #Tipos de consulta
+            h3 = experiencia.find('h3', string=lambda s: s and 'Tipos de consulta' in s)
+            consultas = []
+            if h3 is not None:
+                div_hijo = h3.find_parent('div', class_='mb-1')
+                if div_hijo is not None:
+                    consulta_tag = div_hijo.find_parent('div')
+                    if consulta_tag is not None:
+                        for fila in consulta_tag.find_all('div', recursive=False):
+                            if fila is div_hijo:
+                                continue
+                            consulta_span = fila.find('span')
+                            if consulta_span is None:
+                                continue
+                            consultas.append(consulta_span.find(string=True,recursive=False).strip())
+            #print(consultas)
+            
+
+        
     
             redes_sociales = [red_social.attrs['href'] for red_social in experiencia.find_all(attrs={"rel" : "nofollow noopener noreferrer"})]
 
@@ -160,7 +192,7 @@ def info_scrapper():
 
             #print(lugar)
             #print(procedimiento)
-            
+
             opinion_json.append({
                 "nombre opinion" : nombre,
                 "estrellas" : estrellas, 
@@ -169,5 +201,26 @@ def info_scrapper():
                 "lugar" : lugar,
                 "procedimiento" : procedimiento
                 })
+
+        #servicios
+        servicios_tag = bs.find_all('li', attrs= { "data-id" : "service-item"})
+        servicio_json = []
+        for servicio in servicios_tag:
+            #nombre
+            nombre = servicio.find('h3').get_text(strip=True)
+            #print(nombre)
+            
+            #precio
+            precio_tag = servicio.find(attrs={"class" : "mr-1"})
+            precio = precio_tag.get_text(strip=True) if precio_tag else "None"
+            #print(precio)
+
+            servicio_json.append({
+                "servicio" : nombre,
+                "precio" : precio
+            })
+
+        
+
     return() 
 info_scrapper()
