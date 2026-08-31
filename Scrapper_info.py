@@ -61,7 +61,8 @@ def info_scrapper():
                 })
 
         #Especialidades FALTA CHECAR
-        especialidad = bs.find(attrs={"data-test-id" : "doctor-specializations"}).get_text(strip = True) #imprime texto que no va
+        especialidad_tag = bs.find(attrs={"data-test-id" : "doctor-specializations"}) #imprime texto que no va
+        especialidad = especialidad_tag.find('a'). get_text(strip=True) if especialidad_tag else "None"
 
         #Experiencia
         experiencia = bs.find(attrs={"id" : "about-section"})
@@ -72,28 +73,32 @@ def info_scrapper():
             sobre_mi_tag = experiencia.find(attrs={"class": "about-content"})
             sobre_mi = sobre_mi_tag.get_text(strip=True) if sobre_mi_tag else "None"
 
-            enfermedades_tratadas = [enfermedad.get_text(strip = True) for enfermedad in experiencia.find_all(attrs={"id" : "disease"})]
+            enfermedades_tag = experiencia.find(attrs={"id" : "disease"})
+            enfermedades_tratadas = [enfermedad.get_text(strip = True) for enfermedad in enfermedades_tag if enfermedad.get_text(strip=True)]  if enfermedades_tag else "None"
 
-            idiomas = [lenguaje.get_text(strip = True) for lenguaje in experiencia.find_all(attrs={"id" : "language"})] #los idiomas salen como un string pegado
+            lenguajes_tag  = experiencia.find(attrs={"id" : "language"})
+            lenguajes = [lenguaje.get_text(strip = True) for lenguaje in lenguajes_tag if lenguaje.get_text(strip=True)] if lenguajes_tag else "None"
 
-            enfoques = [enfoque.get_text(strip = True) for enfoque in experiencia.find_all(attrs={"id" : "expertIn"})] #los enfoques salen pegados como un solo string
+            enfoques_tag = experiencia.find(attrs={"id" : "expertIn"})
+            enfoques = [enfoque.get_text(strip = True) for enfoque in enfoques_tag if enfoque.get_text(strip=True)] if enfoques_tag else "None" 
 
-            pacientes = experiencia.find_all(string=[re.compile('Adultos'), re.compile('Niños')]) #TDBN por ahora
+            # se puede hacer de una mejor forma seleccionando los iconos que aparentemente siempre vienen con cada tipo y moverse al texto de forma manual que es un span siguiente
+            pacientes = experiencia.find_all(string=[re.compile('Adultos'), re.compile('Niños') ])
 
-            tipos_consulta = experiencia.find_all('Presencial', 'Videoconsulta') #NO FUNCIONA ACTUALMENTE
-
-            redes_sociales = [red_social.attrs['href'] for red_social in experiencia.find_all(attrs={"rel" : "nofollow noopener noreferrer"})] #funciona pero tiene // al comienzo
+            # #NO FUNCIONA ACTUALMENTE, la mejor forma probablemente es seleccionar los iconos que aparentemente siempre vienen con cada tipo y moverse al texto de forma manual
+            #tipos_consulta = experiencia.find(attrs={}) 
     
+            redes_sociales = [red_social.attrs['href'] for red_social in experiencia.find_all(attrs={"rel" : "nofollow noopener noreferrer"})]
 
             experiencia_json = {
                 "formacion" : formacion,
                 "sobre_mi" : sobre_mi, 
                 "enfermedades_tratadas" : enfermedades_tratadas, 
-                "idiomas" : idiomas,
+                "lenguajes" : lenguajes,
                 "enfoques" : enfoques,
                 "pacientes" : pacientes
                 }
-        else: #No se si sea lo más correcto asumirque por que no hay experiencia entonces no hay nada de lo demas CHECAR
+        else: #No se si sea lo más correcto asumir que por que no hay experiencia entonces no hay nada de lo demas CHECAR
             experiencia_json = {
                 "formacion" : "None",
                 "sobre_mi" : "None", 
@@ -102,6 +107,9 @@ def info_scrapper():
                 "enfoques" : "None",
                 "pacientes" : "None"
                 }
+        #print(experiencia_json)
+        #print (redes_sociales)
+        print(especialidad)
 
     return()
 info_scrapper()
