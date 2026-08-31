@@ -27,6 +27,8 @@ def info_scrapper():
         nombre = (bs.find(attrs={"data-test-id" : "doctor-header-fullname"}).get_text(strip = True))
 
         #clinica
+        
+
 
     return()
 info_scrapper()
