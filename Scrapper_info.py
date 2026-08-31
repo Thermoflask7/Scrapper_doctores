@@ -34,7 +34,7 @@ def get_rendered_html(page, link, click_selector=None, wait_selector=None):
  
     if click_selector:
         try:
-            page.click(click_selector, timeout=5000)
+            page.locator(f"{click_selector} >> visible=true").first.click(timeout=5000)
         except Exception:
             pass
  
@@ -45,7 +45,6 @@ def get_rendered_html(page, link, click_selector=None, wait_selector=None):
             pass
  
     return page.content()
-
 
 def info_scrapper():
     links = profile_scrapper([])
@@ -163,18 +162,18 @@ def info_scrapper():
                     }
             #print(experiencia_json)
             #print (redes_sociales)
-            #print(especialidad) Hola mundo
+            #print(especialidad)
 
             #No. de cedula
             cedula= bs.find(string = [re.compile('cédula:')])
             cedula=cedula.split(':')[-1].split() if cedula else "None"
-            #re.sub(r"\s+", "", cedula) if cedula else None
+            
 
     
             #aseguradoras
             aseguradoras_tag = bs.find_all('li', attrs={"class" : "insurance-item"})
             aseguradoras = [tag.get_text(strip = True) for tag in aseguradoras_tag] 
-            print(aseguradoras)
+            #print(aseguradoras)
 
 
             opiniones_dest = bs.find_all('div', attrs={"data-test-id": "opinion-block"})
