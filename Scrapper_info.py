@@ -2,8 +2,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup 
 import re
 from Scrapper_doctores import profile_scrapper
-
-
+from datetime import datetime
 
 """
     Doctors_json = {
@@ -33,6 +32,7 @@ def info_scrapper():
     doctors_json = {}
 
     for link in links:
+        scrap_time = datetime.now()
         html = urlopen(link)
         bs = BeautifulSoup(html, 'html.parser')
 
@@ -61,8 +61,8 @@ def info_scrapper():
                 "telefonos" : telefonos
                 })
 
-        #Especialidades FALTA CHECAR
-        especialidad_tag = bs.find(attrs={"data-test-id" : "doctor-specializations"}) #imprime texto que no va
+        #Especialidades 
+        especialidad_tag = bs.find(attrs={"data-test-id" : "doctor-specializations"}) 
         especialidad = especialidad_tag.find('a'). get_text(strip=True) if especialidad_tag else "None"
 
         #Experiencia
@@ -83,8 +83,7 @@ def info_scrapper():
             enfoques_tag = experiencia.find(attrs={"id" : "expertIn"})
             enfoques = [enfoque.get_text(strip = True) for enfoque in enfoques_tag if enfoque.get_text(strip=True)] if enfoques_tag else "None" 
 
-            # se puede hacer de una mejor forma seleccionando los iconos que aparentemente siempre vienen con cada tipo y moverse al texto de forma manual que es un span siguiente
-            #pacientes = experiencia.find_all(string=[re.compile('Adultos'), re.compile('Niños') ])
+            #Pacientes
             h3 = experiencia.find('h3', string=lambda s: s and 'Pacientes que atiendo' in s)
             pacientes = []
             if h3 is not None:
@@ -117,10 +116,7 @@ def info_scrapper():
                                 continue
                             consultas.append(consulta_span.find(string=True,recursive=False).strip())
             #print(consultas)
-            
 
-        
-    
             redes_sociales = [red_social.attrs['href'] for red_social in experiencia.find_all(attrs={"rel" : "nofollow noopener noreferrer"})]
 
             experiencia_json = {
