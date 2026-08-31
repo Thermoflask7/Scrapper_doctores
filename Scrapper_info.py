@@ -1,6 +1,7 @@
 from urllib.request import urlopen 
 from bs4 import BeautifulSoup 
 import re
+import json
 from Scrapper_doctores import profile_scrapper
 from datetime import datetime
 from playwright.sync_api import sync_playwright
@@ -56,7 +57,7 @@ def info_scrapper():
 
         for link in links:
             scrap_time = datetime.now()
-            scrap_time = scrap_time.strftime("%Y-%m-%d")
+            scrap_time = scrap_time.strftime("%Y-%m-%d %H:%M:%S")
             html = get_rendered_html(page, link, click_selector="text=Encuentra tu aseguradora", wait_selector="li.insurance-item")
 
             bs = BeautifulSoup(html, 'html.parser')
@@ -253,7 +254,12 @@ def info_scrapper():
                 "scrap date": scrap_time
             }
             doctors_json.append(doctor_json)
-            print(doctor_json)
+    return(doctors_json)
 
-    return() 
-info_scrapper()
+def main():
+    doctors_json = info_scrapper()
+    with open('doctor_data.json', 'w', encoding='utf-8') as output_file:
+        json.dump(doctors_json, output_file, indent=4, ensure_ascii=False)
+    
+
+main()
