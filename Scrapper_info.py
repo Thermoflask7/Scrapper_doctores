@@ -132,19 +132,19 @@ def info_scrapper():
 
             #Nombre
             nombre = opinion.find('h4').get_text(strip=True)
-            print(nombre)
+            #print(nombre)
 
             #Estrellas
             estrellas = opinion.find('div', attrs={"class" : "rating"}).get('data-score')
-            print(estrellas)
+            #print(estrellas)
 
             #Descripcion
             descripcion = opinion.find('p', attrs= {"data-test-id" : "opinion-comment"}).get_text(strip=True)
-            print(descripcion)
+            #print(descripcion)
 
             #Fecha
             fecha = opinion.find('time').get_text(strip=True)
-            print(fecha)
+            #print(fecha)
 
             #lugar y procedimiento
             time_tag = opinion.find('time')
@@ -158,15 +158,16 @@ def info_scrapper():
                 lugar = "None"
                 procedimiento = "None"
 
-            print(lugar)
-            print(procedimiento)
-
-
-            #_json.append({
-                 #   "nombre clinica" : nombre_clinica,
-                  #  "direccion" : direccion, 
-                   # "mapa" : maps_href, 
-                    #"telefonos" : telefonos
-                    #})
+            #print(lugar)
+            #print(procedimiento)
+            
+            opinion_json.append({
+                "nombre opinion" : nombre,
+                "estrellas" : estrellas, 
+                "comentario" : descripcion, 
+                "fecha" : fecha,
+                "lugar" : lugar,
+                "procedimiento" : procedimiento
+                })
     return() 
 info_scrapper()
