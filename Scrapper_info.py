@@ -48,7 +48,7 @@ def get_rendered_html(page, link, click_selector=None, wait_selector=None):
 
 def info_scrapper():
     links = profile_scrapper([])
-    doctors_json = {}
+    doctors_json = []
 
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -56,6 +56,7 @@ def info_scrapper():
 
         for link in links:
             scrap_time = datetime.now()
+            scrap_time = scrap_time.strftime("%Y-%m-%d")
             html = get_rendered_html(page, link, click_selector="text=Encuentra tu aseguradora", wait_selector="li.insurance-item")
 
             bs = BeautifulSoup(html, 'html.parser')
@@ -183,7 +184,7 @@ def info_scrapper():
             for opinion in opiniones_dest:
 
                 #Nombre
-                nombre = opinion.find('h4').get_text(strip=True)
+                nombre_review = opinion.find('h4').get_text(strip=True)
                 #print(nombre)
 
                 #Estrellas
@@ -214,7 +215,7 @@ def info_scrapper():
                 #print(procedimiento)
 
                 opinion_json.append({
-                    "nombre opinion" : nombre,
+                    "nombre opinion" : nombre_review,
                     "estrellas" : estrellas, 
                     "comentario" : descripcion, 
                     "fecha" : fecha,
@@ -227,7 +228,7 @@ def info_scrapper():
             servicio_json = []
             for servicio in servicios_tag:
                 #nombre
-                nombre = servicio.find('h3').get_text(strip=True)
+                nombre_servicio = servicio.find('h3').get_text(strip=True)
                 #print(nombre)
                 
                 #precio
@@ -236,8 +237,23 @@ def info_scrapper():
                 #print(precio)
 
                 servicio_json.append({
-                    "servicio" : nombre,
+                    "servicio" : nombre_servicio,
                     "precio" : precio
                 })
+
+            doctor_json = {
+                "nombre_doctor" : nombre,
+                "especialidad" : especialidad,
+                "cedula" : cedula,
+                "experiencia" : experiencia_json,
+                "clinicas" : clinicas_json,
+                "servicios" : servicio_json,
+                "aseguradoras": aseguradoras,
+                "opiniones" : opinion_json,
+                "scrap date": scrap_time
+            }
+            doctors_json.append(doctor_json)
+            print(doctor_json)
+
     return() 
 info_scrapper()
