@@ -122,5 +122,51 @@ def info_scrapper():
         #aseguradoras_tag= bs.find_all('li', attrs={"class" : "insurance-item"})
         #aseguradoras = [tag.get_text(strip = True) for tag in aseguradoras_tag] 
         #print(aseguradoras)
+
+
+        opiniones_dest = bs.find_all('div', attrs={"data-test-id": "opinion-block"})
+        opiniones_estan= bs.find_all(attrs={"class" : "standars-opinion-containers"})
+        opiniones_tag = opiniones_dest + opiniones_estan
+        opinion_json = []
+        for opinion in opiniones_dest:
+
+            #Nombre
+            nombre = opinion.find('h4').get_text(strip=True)
+            print(nombre)
+
+            #Estrellas
+            estrellas = opinion.find('div', attrs={"class" : "rating"}).get('data-score')
+            print(estrellas)
+
+            #Descripcion
+            descripcion = opinion.find('p', attrs= {"data-test-id" : "opinion-comment"}).get_text(strip=True)
+            print(descripcion)
+
+            #Fecha
+            fecha = opinion.find('time').get_text(strip=True)
+            print(fecha)
+
+            #lugar y procedimiento
+            time_tag = opinion.find('time')
+            span_container = time_tag.find_next_sibling('span', class_='small text-muted') if time_tag else None
+
+            if span_container:
+                textos = [c.strip() for c in span_container.contents if isinstance(c, str) and c.strip()]
+                lugar = textos[0] if len(textos) > 0 else "None"
+                procedimiento = textos[1] if len(textos) > 1 else "None"
+            else:
+                lugar = "None"
+                procedimiento = "None"
+
+            print(lugar)
+            print(procedimiento)
+
+
+            #_json.append({
+                 #   "nombre clinica" : nombre_clinica,
+                  #  "direccion" : direccion, 
+                   # "mapa" : maps_href, 
+                    #"telefonos" : telefonos
+                    #})
     return() 
 info_scrapper()
