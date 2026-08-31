@@ -151,7 +151,8 @@ def info_scrapper():
                     "enfermedades_tratadas" : enfermedades_tratadas, 
                     "lenguajes" : lenguajes,
                     "enfoques" : enfoques,
-                    "pacientes" : pacientes
+                    "pacientes" : pacientes,
+                    "redes_sociales" : redes_sociales
                     }
             else: #No se si sea lo más correcto asumir que por que no hay experiencia entonces no hay nada de lo demas CHECAR
                 experiencia_json = {
@@ -160,7 +161,8 @@ def info_scrapper():
                     "enfermedades_tratadas" : "None", 
                     "idiomas" : "None",
                     "enfoques" : "None",
-                    "pacientes" : "None"
+                    "pacientes" : "None",
+                    "redes_sociales" : "None"
                     }
             #print(experiencia_json)
             #print (redes_sociales)
